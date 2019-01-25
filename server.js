@@ -27,9 +27,12 @@ app.get('/messages', (req, res) => {
     });
 });
 
-app.post('/messages', (req, res) => {
+app.post('/messages', async (req, res) => {
     var message = new Message(req.body);
-
+    var savedMessage = await message.save();
+    io.emit('message', req.body);
+    res.sendStatus(200);
+    /*
     message.save()
     .then(() => {
         io.emit('message', req.body);
@@ -38,6 +41,7 @@ app.post('/messages', (req, res) => {
         res.sendStatus(500);
         return console.error(err);
     });
+    */
     console.log(req.body);
 });
 
