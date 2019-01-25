@@ -6,7 +6,9 @@ var io = require('socket.io')(http);
 var mongoose = require('mongoose');
 mongoose.Promise = Promise; // To let Mongoose know we are using the ES6 Promise library
 
-app.use(express.static(__dirname));  // To serve index.html
+// To serve index.html
+app.use(express.static(__dirname));
+
 // To parse JSON post data
 app.use(bodyParser.json());
 
@@ -53,12 +55,16 @@ app.post('/messages', async (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('a user connected');
+    socket.on('onwriting', (message) => {
+        io.emit('onwriting', message);
+    });
 });
 
 // Connecting to Mongoose
 mongoose.connect(dbUrl, {useNewUrlParser: true}, (err) => {
     console.log('MongoDB connection', err);
 });
+
 var server = http.listen(3000, () => {
     console.log('server is listening on port', server.address().port);
 });

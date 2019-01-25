@@ -10,6 +10,14 @@
 
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <style>
+        #busy {
+            height: 20px;
+        }
+        #busy p {
+            color: red;
+        }
+    </style>
   </head>
   <body>
         <div class="container">
@@ -22,6 +30,9 @@
                 <textarea id="message" class="form-control" placeholder="Message"></textarea>
                 <br>
                 <button id="send" class="btn btn-success">Send</button>
+            </div>
+            <div id="busy">
+                <p>Someone is writing</p>
             </div>
             <div id="messages"></div>
         </div>
@@ -40,7 +51,10 @@
                 });
                 getMessages();
             });
+            let busy = $("#busy p");
+            busy.hide();
             socket.on('message', addMessage);
+            socket.on('onwriting', showWriteAction);
             function addMessage(message) {
                 $("#messages").append(`<h4>${message.name}</h4><p>${message.message}</p>`);
             }
@@ -53,6 +67,14 @@
             }
             function postMessage(message) {
                 $.post('http://localhost:3000/messages', message);
+            }
+            // Each time someone is writing, the action is being noticed by all sockets
+            $( "#message" ).keypress(function() {
+                socket.emit('onwriting', {content: 'Someone is writing...'});
+            });
+            function showWriteAction(message) {
+                busy.show();
+                busy.fadeOut(100);
             }
         </script>
   </body>
