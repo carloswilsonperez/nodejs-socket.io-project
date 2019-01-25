@@ -14,5 +14,8 @@
     "express": "^4.16.4",
     "mongoose": "^5.4.6",
     "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "jasmine": "^3.3.1"
   }
 }
